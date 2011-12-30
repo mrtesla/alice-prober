@@ -10,7 +10,13 @@ var _fetch_endpoints
 
 var busy
 ,   agent
+,   alice_host
+,   alice_port
 ;
+
+alice_host = process.env['ALICE_HOST'] || 'localhost';
+alice_port = process.env['ALICE_PORT'] || '5000';
+alice_port = parseInt(alice_port, 10);
 
 _fetch_endpoints = function(){
   if (busy) {
@@ -28,8 +34,8 @@ _fetch_endpoints = function(){
 
   buffer = "";
   options = {
-    host: 'localhost',
-    port: 5000,
+    host: alice_host,
+    port: alice_port,
     path: '/api_v1/endpoints.json'
   };
 
@@ -250,8 +256,8 @@ _report_results = function(endpoints, report){
 
   options = {
     method: 'POST',
-    host:   'localhost',
-    port:   5000,
+    host:   alice_host,
+    port:   alice_port,
     path:   '/api_v1/probe_report',
     headers: {
       'Content-Type':   'application/json',
