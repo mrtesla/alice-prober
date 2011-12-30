@@ -233,7 +233,7 @@ _probe_backends = function(endpoints, report){
     t = setTimeout(function(){
       report['backends'][backend.id] = { 'error': 'Timeout' };
       cont();
-    }, 1000);
+    }, 30000);
 
     req.on('error', function(err){
       report['backends'][backend.id] = { 'error': err.message };
