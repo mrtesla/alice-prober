@@ -201,9 +201,8 @@ _probe_backends = function(endpoints, report){
       agent:  agent,
       method: 'GET',
       host:   backend['host'],
-      path:   '/',
+      path:   '/_alice/probe/backend',
       headers: {
-        'X-Alice-Probe': 'true',
         'X-Pluto-Backend-Port': backend['port'],
         'Connection': 'close'
       }
