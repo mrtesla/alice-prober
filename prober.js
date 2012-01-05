@@ -202,7 +202,11 @@ _probe_backends = function(endpoints, report){
       method: 'GET',
       host:   backend['host'],
       path:   '/',
-      headers: { 'X-Pluto-Backend-Port': backend['port'], 'Connection': 'close' }
+      headers: {
+        'X-Alice-Probe': 'true',
+        'X-Pluto-Backend-Port': backend['port'],
+        'Connection': 'close'
+      }
     };
 
     endpoints['passers'].forEach(function(passer){
