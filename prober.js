@@ -208,8 +208,11 @@ _probe_backends = function(endpoints, report){
       agent:  agent,
       method: 'GET',
       host:   backend['host'],
-      path:   '/',
-      headers: { 'X-Pluto-Backend-Port': backend['port'], 'Connection': 'close' }
+      path:   '/_alice/probe/backend',
+      headers: {
+        'X-Pluto-Backend-Port': backend['port'],
+        'Connection': 'close'
+      }
     };
 
     endpoints['passers'].forEach(function(passer){
