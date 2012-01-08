@@ -115,7 +115,7 @@ _probe_routers = function(endpoints, report){
     });
 
     t = setTimeout(function(){
-      report['routers'][routers.id] = { 'error': 'Timeout' };
+      report['routers'][router.id] = { 'error': 'Timeout' };
       cont();
     }, 1000);
 
