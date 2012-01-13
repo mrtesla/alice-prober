@@ -293,4 +293,4 @@ _report_results = function(endpoints, report){
 agent = new Http.Agent();
 agent.maxSockets = 100;
 
-setInterval(_fetch_endpoints, 15000);
+setInterval(_fetch_endpoints, 30000);
