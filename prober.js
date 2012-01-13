@@ -117,7 +117,7 @@ _probe_routers = function(endpoints, report){
     t = setTimeout(function(){
       report['routers'][router.id] = { 'error': 'Timeout' };
       cont();
-    }, 1000);
+    }, 5000);
 
     req.on('error', function(err){
       report['routers'][router.id] = { 'error': err.message };
@@ -173,7 +173,7 @@ _probe_passers = function(endpoints, report){
     t = setTimeout(function(){
       report['passers'][passer.id] = { 'error': 'Timeout' };
       cont();
-    }, 1000);
+    }, 5000);
 
     req.on('error', function(err){
       report['passers'][passer.id] = { 'error': err.message };
