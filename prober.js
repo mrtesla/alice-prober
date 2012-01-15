@@ -75,12 +75,13 @@ _fetch_endpoints = function(){
 
 _probe_routers = function(endpoints, report){
   var cont
-  ,   pending = 0
+  ,   pending = {}
   ;
 
-  cont = function(){
-    pending -= 1;
-    if (pending == 0) {
+  cont = function(key){
+    if (!pending[key]) { return; }
+    delete pending[key];
+    if (Object.keys(pending).length == 0) {
       _probe_passers(endpoints, report);
     }
   };
@@ -89,9 +90,12 @@ _probe_routers = function(endpoints, report){
     var options
     ,   req
     ,   t
+    ,   key
     ;
 
-    pending += 1;
+    key = '' + router['host'] + router['port'];
+    pending[key] = true;
+
     options = {
       agent:  agent,
       method: 'HEAD',
@@ -111,18 +115,18 @@ _probe_routers = function(endpoints, report){
         report['routers'][router.id] = { 'error': "Returned status: "+res.statusCode };
       }
       clearTimeout(t);
-      cont();
+      cont(key);
     });
 
     t = setTimeout(function(){
       report['routers'][router.id] = { 'error': 'Timeout' };
-      cont();
+      cont(key);
     }, 5000);
 
     req.on('error', function(err){
       report['routers'][router.id] = { 'error': err.message };
       clearTimeout(t);
-      cont();
+      cont(key);
     });
 
     req.end();
@@ -131,12 +135,13 @@ _probe_routers = function(endpoints, report){
 
 _probe_passers = function(endpoints, report){
   var cont
-  ,   pending = 0
+  ,   pending = {}
   ;
 
-  cont = function(){
-    pending -= 1;
-    if (pending == 0) {
+  cont = function(key){
+    if (!pending[key]) { return; }
+    delete pending[key];
+    if (Object.keys(pending).length == 0) {
       _probe_backends(endpoints, report);
     }
   };
@@ -145,9 +150,12 @@ _probe_passers = function(endpoints, report){
     var options
     ,   req
     ,   t
+    ,   key
     ;
 
-    pending += 1;
+    key = '' + passer['host'] + passer['port'];
+    pending[key] = true;
+
     options = {
       agent:  agent,
       method: 'HEAD',
@@ -167,18 +175,18 @@ _probe_passers = function(endpoints, report){
         report['passers'][passer.id] = { 'error': "Returned status: "+res.statusCode };
       }
       clearTimeout(t);
-      cont();
+      cont(key);
     });
 
     t = setTimeout(function(){
       report['passers'][passer.id] = { 'error': 'Timeout' };
-      cont();
+      cont(key);
     }, 5000);
 
     req.on('error', function(err){
       report['passers'][passer.id] = { 'error': err.message };
       clearTimeout(t);
-      cont();
+      cont(key);
     });
 
     req.end();
@@ -187,12 +195,13 @@ _probe_passers = function(endpoints, report){
 
 _probe_backends = function(endpoints, report){
   var cont
-  ,   pending = 0
+  ,   pending = {}
   ;
 
-  cont = function(){
-    pending -= 1;
-    if (pending == 0) {
+  cont = function(key){
+    if (!pending[key]) { return; }
+    delete pending[key];
+    if (Object.keys(pending).length == 0) {
       _report_results(endpoints, report);
     }
   };
@@ -201,9 +210,12 @@ _probe_backends = function(endpoints, report){
     var options
     ,   req
     ,   t
+    ,   key
     ;
 
-    pending += 1;
+    key = '' + backend['host'] + backend['port'];
+    pending[key] = true;
+
     options = {
       agent:  agent,
       method: 'GET',
@@ -223,7 +235,7 @@ _probe_backends = function(endpoints, report){
 
     if (!options.port) {
       report['backends'][backend.id] = { 'error': 'No passer for '+backend.host };
-      cont();
+      cont(key);
       return;
     }
 
@@ -237,18 +249,18 @@ _probe_backends = function(endpoints, report){
         report['backends'][backend.id] = { 'error': "Returned status: "+res.statusCode };
       }
       clearTimeout(t);
-      cont();
+      cont(key);
     });
 
     t = setTimeout(function(){
       report['backends'][backend.id] = { 'error': 'Timeout' };
-      cont();
+      cont(key);
     }, 30000);
 
     req.on('error', function(err){
       report['backends'][backend.id] = { 'error': err.message };
       clearTimeout(t);
-      cont();
+      cont(key);
     });
 
     req.end();
