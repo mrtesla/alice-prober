@@ -19,7 +19,10 @@ var busy
 ,   agent
 ,   alice_host
 ,   alice_port
+,   machine
 ;
+
+machine = process.env['PROBER_HOST'];
 
 alice_host = process.env['ALICE_HOST'] || 'localhost';
 alice_port = process.env['ALICE_PORT'] || '5000';
@@ -43,7 +46,7 @@ _fetch_endpoints = function(){
   options = {
     host: alice_host,
     port: alice_port,
-    path: '/api_v1/endpoints.json'
+    path: '/api_v1/machines/'+machine+'/endpoints.json'
   };
 
   Http.get(options, function(res) {
@@ -85,6 +88,11 @@ _probe_routers = function(endpoints, report){
       _probe_passers(endpoints, report);
     }
   };
+
+  if (endpoints['routers'].length === 0) {
+    _probe_passers(endpoints, report);
+    return;
+  }
 
   endpoints['routers'].forEach(function(router){
     var options
@@ -146,6 +154,11 @@ _probe_passers = function(endpoints, report){
     }
   };
 
+  if (endpoints['passers'].length === 0) {
+    _probe_backends(endpoints, report);
+    return;
+  }
+
   endpoints['passers'].forEach(function(passer){
     var options
     ,   req
@@ -205,6 +218,11 @@ _probe_backends = function(endpoints, report){
       _report_results(endpoints, report);
     }
   };
+
+  if (endpoints['backends'].length === 0) {
+    _report_results(endpoints, report);
+    return;
+  }
 
   endpoints['backends'].forEach(function(backend){
     var options
@@ -280,7 +298,7 @@ _report_results = function(endpoints, report){
     method: 'POST',
     host:   alice_host,
     port:   alice_port,
-    path:   '/api_v1/probe_report',
+    path:   '/api_v1/machines/'+machine+'/probe_report',
     headers: {
       'Content-Type':   'application/json',
       'Accepts':        'application/json',
