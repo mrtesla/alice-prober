@@ -238,24 +238,13 @@ _probe_backends = function(endpoints, report){
       agent:  agent,
       method: 'GET',
       host:   backend['host'],
+      port:   backend['port'],
       path:   '/_alice/probe/backend',
       headers: {
         'X-Pluto-Backend-Port': backend['port'],
         'Connection': 'close'
       }
     };
-
-    endpoints['passers'].forEach(function(passer){
-      if (!options.port && report['passers'][''+passer.id] === true && passer.host === backend.host) {
-        options.port = passer.port;
-      }
-    });
-
-    if (!options.port) {
-      report['backends'][backend.id] = { 'error': 'No passer for '+backend.host };
-      cont(key);
-      return;
-    }
 
     req = Http.request(options);
     req.setHeader('Connection', 'close');
@@ -323,4 +312,4 @@ _report_results = function(endpoints, report){
 agent = new Http.Agent();
 agent.maxSockets = 100;
 
-setInterval(_fetch_endpoints, 30000);
+setInterval(_fetch_endpoints, 60000);
