@@ -129,7 +129,7 @@ _probe_routers = function(endpoints, report){
     t = setTimeout(function(){
       report['routers'][router.id] = { 'error': 'Timeout' };
       cont(key);
-    }, 5000);
+    }, 10 * 1000);
 
     req.on('error', function(err){
       report['routers'][router.id] = { 'error': err.message };
@@ -194,7 +194,7 @@ _probe_passers = function(endpoints, report){
     t = setTimeout(function(){
       report['passers'][passer.id] = { 'error': 'Timeout' };
       cont(key);
-    }, 5000);
+    }, 10 * 1000);
 
     req.on('error', function(err){
       report['passers'][passer.id] = { 'error': err.message };
@@ -262,7 +262,7 @@ _probe_backends = function(endpoints, report){
     t = setTimeout(function(){
       report['backends'][backend.id] = { 'error': 'Timeout' };
       cont(key);
-    }, 30000);
+    }, 60 * 1000);
 
     req.on('error', function(err){
       report['backends'][backend.id] = { 'error': err.message };
@@ -312,4 +312,4 @@ _report_results = function(endpoints, report){
 agent = new Http.Agent();
 agent.maxSockets = 100;
 
-setInterval(_fetch_endpoints, 60000);
+setInterval(_fetch_endpoints, 3 * 60 * 1000);
